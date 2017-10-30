@@ -12,7 +12,7 @@ unsigned char  otask = 0xff;          /* task number of output task           */
 unsigned char  istart;                /* receiving buffer start index         */
 unsigned char  iend;                  /* receiving buffer end index           */
 idata    char  inbuf[ILEN];           /* storage for receiving buffer         */
-unsigned char  itask = 0xff;          /* task number of output task           */
+static unsigned char  itask = 0xff;   /* task number of output task           */
 
 static bit   sendfull;                /* flag: marks transmit buffer full     */
 static bit   sendactive;              /* flag: marks transmitter active       */

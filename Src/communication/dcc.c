@@ -13,6 +13,7 @@
 #include <RTX51TNY.H>
 #include <string.h>
 #include "../Board/ChipSE0164.h"
+#include <stdio.h>
 
 static xdata CMD_FRAME dccframe;
 xdata uint8 looped = 0;
@@ -52,9 +53,11 @@ void dccRcvFrame(void) _task_ tsk_dcc_rcv {
 
 			rcvLen = getRCMFLength();
 			if( rcvLen > MAX_FRAME_LEN || rcvLen < MIN_FRAME_LEN ) {
+				readRCMFOver();
 				continue;
 			}
 			if( readRCMFData(0) != FRAME_HEAD ) {
+				readRCMFOver();
 				continue;
 			}
 			dccframe.rtype = readRCMFData(1);
@@ -62,6 +65,8 @@ void dccRcvFrame(void) _task_ tsk_dcc_rcv {
 			for (i = 0; i < dccframe.rlen; ++i) {
 				dccframe.rdata[i] = readRCMFData(i+3);
 			}
+			readRCMFOver();
+
 			if( dccframe.rtype == LOCAL_CMD ) {
 				processCMD(&dccframe);
 				dccframe.ttype = REMOTE_CMD;

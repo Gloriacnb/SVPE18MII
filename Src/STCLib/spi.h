@@ -52,11 +52,11 @@ typedef struct
 
 
 
-extern	u8	SPI_TxRxMode;
-extern	u8 	SPI_TxWrite;
-extern	u8 	SPI_TxRead;
-extern	u8 	SPI_RxCnt;
-extern	u8 	SPI_RxTimerOut;
+extern	u8	SPI_BUF_type SPI_TxRxMode;
+extern	u8 	SPI_BUF_type SPI_TxWrite;
+extern	u8 	SPI_BUF_type SPI_TxRead;
+extern	u8 	SPI_BUF_type SPI_RxCnt;
+extern	u8 	SPI_BUF_type SPI_RxTimerOut;
 extern	u8 	SPI_BUF_type SPI_RxBuffer[SPI_BUF_LENTH];
 extern	u8 	SPI_BUF_type SPI_TxBuffer[SPI_BUF_LENTH];
 extern	bit 	B_SPI_RxOk;

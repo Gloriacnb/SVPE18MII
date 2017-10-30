@@ -13,12 +13,12 @@
 
 
 #include	"spi.h"
-
-u8	SPI_TxRxMode;	//
-u8 	SPI_TxWrite;
-u8 	SPI_TxRead;
-u8 	SPI_RxCnt;
-u8 	SPI_RxTimerOut;
+#include <RTX51TNY.H>
+u8	SPI_BUF_type SPI_TxRxMode;	//
+u8 	SPI_BUF_type SPI_TxWrite;
+u8 	SPI_BUF_type SPI_TxRead;
+u8 	SPI_BUF_type SPI_RxCnt;
+u8 	SPI_BUF_type SPI_RxTimerOut;
 u8 	SPI_BUF_type SPI_RxBuffer[SPI_BUF_LENTH];
 u8 	SPI_BUF_type SPI_TxBuffer[SPI_BUF_LENTH];
 bit 	B_SPI_RxOk;
@@ -48,7 +48,7 @@ void	SPI_Init(SPI_InitTypeDef *SPIx)
 	if(SPIx->SPI_Interrupt == ENABLE)		IE2 |=  (1<<1);
 	else									IE2 &= ~(1<<1);
 	SPCTL = (SPCTL & ~3) | (SPIx->SPI_Speed & 3);					//set speed
-	AUXR1 = (AUXR1 & ~(3<<2)) | SPIx->SPI_IoUse;	
+	AUXR1 = (AUXR1 & ~(3<<2)) | SPIx->SPI_IoUse;
 }
 
 //========================================================================
@@ -138,9 +138,9 @@ void SPI_Transivion (void) interrupt SPI_VECTOR
 		}
 		else
 		{
-			SPI_TxRxMode = SPI_Mode_Slave;
-			SPCTL &= ~(1<<4);	//slave
-			SPI_SS = 1;
+//			SPI_TxRxMode = SPI_Mode_Slave;
+//			SPCTL &= ~(1<<4);	//slave
+//			SPI_SS = 1;
 		}
 	}
 

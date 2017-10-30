@@ -15,6 +15,9 @@
 #include <RTX51TNY.H>
 #include "../STCLib/delay.h"
 #include "ChipSE0164.h"
+#include "ChipIP101G.h"
+#include "../Alarm/AlarmModule.h"
+#include "../Business/ConfigModule.h"
 
 void boardInit(void) {
 
@@ -43,11 +46,16 @@ void boardInit(void) {
 	if( !initSE0164() ) {
         printf("Init SE0164 failed!!\r\n");
     }
+	if( !initIP101G() ) {
+        printf("Init IP101G failed!!\r\n");
+	}
     initDCC();
 	initLEDs();
 	printf("Board initial completed.\r\n");
 
 //	boardAutoTest();
+	initConfigModule();						//初始化配置数据
+	runAlarmModule();						//运行告警模块
 }
 void boardAutoTest(void) {
 	os_create_task(tsk_test);

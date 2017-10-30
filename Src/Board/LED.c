@@ -13,7 +13,7 @@
 #include "ChipSE0164.h"
 
 #define LED_RUN P35
-//#define LED_TOP_ALM P35
+#define LED_TOP_ALM P36
 
 extern xdata uint8 looped;
 /*
@@ -38,19 +38,19 @@ void initLEDs(void) {
 //    os_create_task(tsk_led_e1);
 }
 
-/*
- * 点亮所有E1 LED灯
- */
-void turnOnE1LEDs(void) {
-	sendByteSDO0(0xff);
-}
-
-/*
- * 熄灭所有E1 LED灯
- */
-void turnOffE1LEDs(void) {
-	sendByteSDO0(0);
-}
+///*
+// * 点亮所有E1 LED灯
+// */
+//void turnOnE1LEDs(void) {
+//	sendByteSDO0(0xff);
+//}
+//
+///*
+// * 熄灭所有E1 LED灯
+// */
+//void turnOffE1LEDs(void) {
+//	sendByteSDO0(0);
+//}
 
 /*
  * 刷新E1 指示灯
@@ -64,9 +64,9 @@ void turnOffE1LEDs(void) {
 	bit E1_4_tsf = ledSta^6;
 	bit E1_4_los = ledSta^7;
  */
-void refreshE1LEDs(uint8 ledSta) {
-	sendByteSDO0(ledSta);
-}
+//void refreshE1LEDs(uint8 ledSta) {
+//	sendByteSDO0(ledSta);
+//}
 
 /*
  * run灯任务，每0.5s反转 run灯
@@ -78,12 +78,12 @@ void ledRun(void) _task_ tsk_run {
 //		if( looped == 1 ) {
 //			LED_TOP_ALM ^= 1;	//有环回时闪
 //		}
-//		else if( ifGFPSyncLOSS() ) {
-//			LED_TOP_ALM = 0;	//GFP 失步亮
-//		}
-//		else {
-//			LED_TOP_ALM = 1;	//GFP同步时灭
-//		}
+		if( ifGFPSyncLOSS() ) {
+			LED_TOP_ALM = 1;	//GFP 失步灭
+		}
+		else {
+			LED_TOP_ALM = 0;	//GFP同步时亮
+		}
 	}
 }
 
@@ -92,47 +92,47 @@ void ledRun(void) _task_ tsk_run {
  * E1 点灯任务
  * 	注意：此任务为临时版本，当后期实现告警模块时，E1 LED做为告警输出的部分，到时需要重构
  */
-void ledE1(void) _task_ tsk_led_e1 {
-	int xdata E1_ALARM[4] = {0};
-	uint8 xdata i = 0;
-
-	/*E1接口指示灯全亮两秒后熄灭*/
-	turnOnE1LEDs();
-	os_wait (K_TMO, 200, 0);
-	turnOffE1LEDs();
-
-	while(1) {
-		os_wait (K_IVL, 100, 0);
-		for (i = 0; i < 4; ++i) {
-			E1_ALARM[i] = getE1Alarm(i);
-		}
-		E1_1_tsf = ((E1_ALARM[0] & 0xaf) != 0);
-		E1_2_tsf = ((E1_ALARM[1] & 0xaf) != 0);
-		E1_3_tsf = ((E1_ALARM[2] & 0xaf) != 0);
-		E1_4_tsf = ((E1_ALARM[3] & 0xaf) != 0);
-        
-        if( ((E1_ALARM[0]>>4)&1) && (~(E1_ALARM[0]>>0)&1) )
-        	E1_1_los ^= 1;						//CV告警work灯闪烁
-        else
-        	E1_1_los = ~(E1_ALARM[0]>>0)&1;
-
-        if( ((E1_ALARM[1]>>4)&1)  && (~(E1_ALARM[1]>>0)&1) )
-        	E1_2_los ^= 1;
-        else
-        	E1_2_los = ~(E1_ALARM[1]>>0)&1;
-
-        if( ((E1_ALARM[2]>>4)&1)  && (~(E1_ALARM[2]>>0)&1) )
-        	E1_3_los ^= 1;
-        else
-        	E1_3_los = ~(E1_ALARM[2]>>0)&1;
-
-        if( ((E1_ALARM[3]>>4)&1)  && (~(E1_ALARM[3]>>0)&1) )
-        	E1_4_los ^= 1;
-        else
-        	E1_4_los = ~(E1_ALARM[3]>>0)&1;
-
-
-
-        refreshE1LEDs(LED_STA);
-	}
-}
+//void ledE1(void) _task_ tsk_led_e1 {
+//	int xdata E1_ALARM[4] = {0};
+//	uint8 xdata i = 0;
+//
+//	/*E1接口指示灯全亮两秒后熄灭*/
+//	turnOnE1LEDs();
+//	os_wait (K_TMO, 200, 0);
+//	turnOffE1LEDs();
+//
+//	while(1) {
+//		os_wait (K_IVL, 100, 0);
+//		for (i = 0; i < 4; ++i) {
+//			E1_ALARM[i] = getE1Alarm(i);
+//		}
+//		E1_1_tsf = ((E1_ALARM[0] & 0xaf) != 0);
+//		E1_2_tsf = ((E1_ALARM[1] & 0xaf) != 0);
+//		E1_3_tsf = ((E1_ALARM[2] & 0xaf) != 0);
+//		E1_4_tsf = ((E1_ALARM[3] & 0xaf) != 0);
+//
+//        if( ((E1_ALARM[0]>>4)&1) && (~(E1_ALARM[0]>>0)&1) )
+//        	E1_1_los ^= 1;						//CV告警work灯闪烁
+//        else
+//        	E1_1_los = ~(E1_ALARM[0]>>0)&1;
+//
+//        if( ((E1_ALARM[1]>>4)&1)  && (~(E1_ALARM[1]>>0)&1) )
+//        	E1_2_los ^= 1;
+//        else
+//        	E1_2_los = ~(E1_ALARM[1]>>0)&1;
+//
+//        if( ((E1_ALARM[2]>>4)&1)  && (~(E1_ALARM[2]>>0)&1) )
+//        	E1_3_los ^= 1;
+//        else
+//        	E1_3_los = ~(E1_ALARM[2]>>0)&1;
+//
+//        if( ((E1_ALARM[3]>>4)&1)  && (~(E1_ALARM[3]>>0)&1) )
+//        	E1_4_los ^= 1;
+//        else
+//        	E1_4_los = ~(E1_ALARM[3]>>0)&1;
+//
+//
+//
+//        refreshE1LEDs(LED_STA);
+//	}
+//}
