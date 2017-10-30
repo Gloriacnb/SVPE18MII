@@ -34,7 +34,7 @@ void dccSendFrame(CMD_FRAME* f) {
 	}
 	setTCMFLength(f->tlen + 3);			//指定发送帧总长度
 	startTCMF();
-	delay_ms(1);
+	delay_ms(100);
 //	while(!ifTCMFOver());
 }
 
