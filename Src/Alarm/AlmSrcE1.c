@@ -11,6 +11,7 @@
 #include "../Board/ChipSE0164.h"
 
 static bool ifE1Alarm(uint8 sid, ALM_TYPE* types);
+//extern xdata uint8 looped = 0;
 
 int initALMSrcE1(ALM_SRC* src, uint8 count) {
 	uint8 i = 0;
@@ -50,7 +51,12 @@ bool ifE1Alarm(uint8 sid, ALM_TYPE* types) {
 	types[E1_CV ].actState = ((alarmd & (1<<0)) != 0);
 	types[E1_CRC].actState = ((alarmd & (1<<1)) != 0);
 	types[E1_LOOP].actState = ((alarmd & (1<<4)) != 0);
-
+//	if(types[E1_LOOP].actState) {
+//		looped = 1;
+//	}
+//	else {
+//		looped = 0;
+//	}
 	types[E1_RDI].actState = false;
 	return true;
 }

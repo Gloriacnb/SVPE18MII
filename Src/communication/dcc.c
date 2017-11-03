@@ -14,14 +14,15 @@
 #include <string.h>
 #include "../Board/ChipSE0164.h"
 #include <stdio.h>
+#include "../Board/ChipIP101G.h"
 
 static xdata CMD_FRAME dccframe;
-xdata uint8 looped = 0;
+extern xdata uint8 looped;
 
 void initDCC(void) {
 	os_create_task(tsk_dcc_rcv);		//dcc收包任务
-//	os_create_task(tsk_loop_detect);	//环回维护任务
-//	os_create_task(tsk_send_loop);		//建立环回帧发送任务
+	os_create_task(tsk_loop_detect);	//环回维护任务
+	os_create_task(tsk_send_loop);		//建立环回帧发送任务
 }
 
 void dccSendFrame(CMD_FRAME* f) {
@@ -78,62 +79,63 @@ void dccRcvFrame(void) _task_ tsk_dcc_rcv {
 				memcpy(dccframe.tdata, dccframe.rdata, dccframe.tlen);
 				consoleSendFrame(&dccframe);
 			}
-//			else if( dccframe.rtype == LOOP_DETEC ) {
-//				if( (dccframe.rdata[0] | (dccframe.rdata[1]<<8)) == getSerialNumber() ) {
-//					//检测到环回
-//					os_send_signal(tsk_loop_detect);
-//				}
-//
-//			}
+			else if( dccframe.rtype == LOOP_DETEC ) {
+				if( (dccframe.rdata[0] | (dccframe.rdata[1]<<8)) == getSerialNumber() ) {
+					//检测到环回
+					os_send_signal(tsk_loop_detect);
+				}
+
+			}
 		}
 	}
 }
 
-///*
-// * 间隔0.5s发送环回探测包
-// */
-//void sendLoopFrame(void) _task_ tsk_send_loop {
-//	xdata CMD_FRAME loopframe;
-//	xdata uint16 sn = getSerialNumber();
-//	loopframe.ttype = LOOP_DETEC;
-//	loopframe.tlen = 3;
-//	loopframe.tdata[0] = sn & 0xff;
-//	loopframe.tdata[1] = (sn>>8) & 0xff;
-//	loopframe.tdata[2] = CMD_OK;
-//	while(1) {
-//		os_wait(K_IVL, 70, 0);
-//		dccSendFrame(&loopframe);
-//	}
-//}
-//
-///*
-// * 检测到环回后的处理任务
-// * 	一旦检测到环回，则关闭所有LAN口
-// * 	如果连续两秒都没有检测到环回，则打开LAN口
-// */
-//void loopDetection(void) _task_ tsk_loop_detect {
-//	while(1) {
-//		xdata uint8 i;
-//		xdata char event;
-//		event = os_wait(K_SIG | K_IVL, 200, 0);
-//		switch(event) {
-//		case SIG_EVENT:	//检测到环回
-//			if( looped == 0 ) {
-//				looped = 1;
+/*
+ * 间隔0.5s发送环回探测包
+ */
+void sendLoopFrame(void) _task_ tsk_send_loop {
+	xdata CMD_FRAME loopframe;
+	xdata uint16 sn = getSerialNumber();
+	loopframe.ttype = LOOP_DETEC;
+	loopframe.tlen = 3;
+	loopframe.tdata[0] = sn & 0xff;
+	loopframe.tdata[1] = (sn>>8) & 0xff;
+	loopframe.tdata[2] = CMD_OK;
+	while(1) {
+		os_wait(K_IVL, 70, 0);
+		dccSendFrame(&loopframe);
+	}
+}
+
+/*
+ * 检测到环回后的处理任务
+ * 	一旦检测到环回，则关闭所有LAN口
+ * 	如果连续两秒都没有检测到环回，则打开LAN口
+ */
+void loopDetection(void) _task_ tsk_loop_detect {
+	while(1) {
+		xdata char event;
+		event = os_wait(K_SIG | K_IVL, 200, 0);
+		switch(event) {
+		case SIG_EVENT:	//检测到环回
+			if( looped == 0 ) {
+				looped = 1;
 //				for (i = 0; i < 4; ++i) {
 //					rtl8306e_regbit_set(i, 0, 11, 0, 1);	//power down
 //				}
-//			}
-//			os_reset_interval(200);
-//			break;
-//		case TMO_EVENT:	//连续两秒没有检测到环回，则认为环回已经取消
-//			looped = 0;
+				writeIP101G(IP101_PHY, 0, 0, readIP101G(IP101_PHY, 0, 0) | (1<<11));
+			}
+			os_reset_interval(200);
+			break;
+		case TMO_EVENT:	//连续两秒没有检测到环回，则认为环回已经取消
+			looped = 0;
 //			for (i = 0; i < 4; ++i) {
-//				rtl8306e_regbit_set(i, 0, 11, 0, 0);	//power down
+//				rtl8306e_regbit_set(i, 0, 11, 0, 0);	//power up
 //			}
-//			break;
-//		default:
-//			break;
-//		}
-//	}
-//}
+			writeIP101G(IP101_PHY, 0, 0, readIP101G(IP101_PHY, 0, 0) & ~(1<<11));
+			break;
+		default:
+			break;
+		}
+	}
+}

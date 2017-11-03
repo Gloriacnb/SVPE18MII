@@ -16,7 +16,6 @@
 #include "..\inc\taskID.h"
 #define SE0164_CS 		P37		//片选信号，低（0）有效
 //static bool FIRST_MDIO = true;
-
 /*
  * 读取SE0164寄存器
  * 		regaddr 寄存器地址
@@ -120,10 +119,10 @@ uint16 readChipID(void) {
  */
 bool setDefault(void) {
 	uint8 i = 0;
-	writeSE0164(SE0164_GLOBAL_CHIP_RST_EN, 0x3f);//控制方式为寄存器输入，WAN侧以太侧发送接收使能，禁止WAN侧环回检测
+	writeSE0164(SE0164_GLOBAL_CHIP_RST_EN, 0x3F);//控制方式为寄存器输入，WAN侧以太侧发送接收使能，打开WAN侧环回检测
 	writeSE0164(SE0164_GLOBAL_WAN_TS_CLK, 0);//WAN收发均采用E1 HDB3模式
 	writeSE0164(SE0164_GLOBAL_CFG_4, 0x98);//禁止带宽耦合，封包模式为GFP
-	writeSE0164(SE0164_GLOBAL_CFG_5, 0x87);//PHY接口自适应，禁止自动网管帧，禁止MAC地址过滤，SDRAM大容量，使能流控
+	writeSE0164(SE0164_GLOBAL_CFG_5, 0x07);//PHY接口强制百兆全双工，禁止自动网管帧，禁止MAC地址过滤，SDRAM大容量，使能流控
 	writeSE0164(0x06, 0xA7);//检测到环回时，禁止MII接口；GFP收管理帧到接收RAM；
 	writeSE0164(0x07, 0xDD);//使能地址表老化和初始化；使能流控
 	writeSE0164(0x0d, 0xC0); //选择网管帧发送接收均为数据格式标准网管帧

@@ -15,7 +15,7 @@
 #define LED_RUN P35
 #define LED_TOP_ALM P36
 
-extern xdata uint8 looped;
+xdata uint8 looped;
 /*
  * bdata 和相关的 sbit变量必须设置为全局变量
  */
@@ -75,10 +75,10 @@ void ledRun(void) _task_ tsk_run {
 	while(1) {
 		os_wait (K_IVL, 50, 0);
 		LED_RUN ^= 1;
-//		if( looped == 1 ) {
-//			LED_TOP_ALM ^= 1;	//有环回时闪
-//		}
-		if( ifGFPSyncLOSS() ) {
+		if( looped == 1 ) {
+			LED_TOP_ALM ^= 1;	//有环回时闪
+		}
+		else if( ifGFPSyncLOSS() ) {
 			LED_TOP_ALM = 1;	//GFP 失步灭
 		}
 		else {
