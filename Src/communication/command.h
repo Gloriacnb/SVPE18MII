@@ -41,6 +41,8 @@ enum {
 	CMD_ALM_ATTR_SET	= 6,
 	CMD_VCG_CFG_GET		= 7,
 	CMD_VCG_CFG_SET		= 8,
+	CMD_SYS_CFG_GET		= 9,
+	CMD_SYS_CFG_SET		= 10,
 	CMD_DEBUG			= 0xdb,
 };
 

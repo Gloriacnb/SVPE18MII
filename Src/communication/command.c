@@ -124,6 +124,18 @@ void processCMD(CMD_FRAME* f) {
 				nack(f, ERR_SETFAILED);
 			}
 			break;
+		case CMD_SYS_CFG_GET:
+			*oPara = getClockMode();
+			padTData(f, 1);
+			break;
+		case CMD_SYS_CFG_SET:
+			if( setClockMode(*iPara) ) {
+				ack(f);
+			}
+			else {
+				nack(f, ERR_SETFAILED);
+			}
+			break;
 		case CMD_DEBUG:
 			if( f->rlen >= 4 ) {
 				switch(f->rdata[1]) {

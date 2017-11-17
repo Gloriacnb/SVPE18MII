@@ -21,7 +21,16 @@
 							 LastRepair_date_bytes +\
 							 Device_serialnumber_bytes)
 
+typedef struct SYS_CFG_DATA {
+	uint8 clock;		//0 主时钟，1恢复时钟
+	uint8 crc;
+}SYS_CFG;
+
 uint8 getFactoryInfo(uint8* info);
 uint8 setFactoryInfo(uint8* d, uint8 len);
 uint16 getSerialNumber(void);
+
+void initSysConfig(void);
+bool setClockMode(uint8 mode);
+uint8 getClockMode(void);
 #endif /* SRC_BUSINESS_DEVICE_H_ */

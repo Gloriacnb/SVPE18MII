@@ -9,8 +9,10 @@
 #include "../Business/E1Port.h"
 #include "../Business/VCG.h"
 #include "../Business/EthPort.h"
+#include "../Business/Device.h"
 
 void initConfigModule(void) {
+	initSysConfig();
 	initE1PortConfig();
 	initVCGConfig();
 	initEthPortConfig();

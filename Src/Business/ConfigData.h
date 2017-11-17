@@ -14,6 +14,7 @@
 #define E1_CFG_SECTOR		1
 #define ETH_CFG_SECTOR		2
 #define VCG_CFG_SECTOR		3
+#define SYS_CFG_SECTOR		4
 
 #define EEADDR(n)		((n)<<9)
 
