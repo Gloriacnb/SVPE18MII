@@ -115,17 +115,20 @@ uint16 readChipID(void) {
 
 /*
  * 将芯片配置为默认状态
- * 配置IP101为工作状态
+ * 配置IP101为工作状态**
  */
 bool setDefault(void) {
 	uint8 i = 0;
 	writeSE0164(SE0164_GLOBAL_CHIP_RST_EN, 0x3F);//控制方式为寄存器输入，WAN侧以太侧发送接收使能，打开WAN侧环回检测
-	writeSE0164(SE0164_GLOBAL_WAN_TS_CLK, 0);//WAN收发均采用E1 HDB3模式
+	writeSE0164(SE0164_GLOBAL_WAN_TS_CLK, 0x00);//WAN收发均采用E1 HDB3模式
 	writeSE0164(SE0164_GLOBAL_CFG_4, 0x98);//禁止带宽耦合，封包模式为GFP
 	writeSE0164(SE0164_GLOBAL_CFG_5, 0x07);//PHY接口强制百兆全双工，禁止自动网管帧，禁止MAC地址过滤，SDRAM大容量，使能流控
 	writeSE0164(0x06, 0xA7);//检测到环回时，禁止MII接口；GFP收管理帧到接收RAM；
 	writeSE0164(0x07, 0xDD);//使能地址表老化和初始化；使能流控
 	writeSE0164(0x0d, 0xC0); //选择网管帧发送接收均为数据格式标准网管帧
+	writeSE0164(0x10, 0xFF);//时系选择
+	writeSE0164(0x1e, 0x25);//最大帧长(高位)
+	writeSE0164(0x1f, 0x81);//最大帧长(低位)
 	return true;
 }
 

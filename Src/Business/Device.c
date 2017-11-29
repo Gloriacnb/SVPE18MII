@@ -14,7 +14,7 @@
 
 static const uint8 DEVICE_TYPE[] = {0x30, 0x11};
 static const uint8 HARDWARE_VER[] = {1,2};
-static const uint8 SOFTWARE_VER[] = {1,0,2};
+static const uint8 SOFTWARE_VER[] = {1,0,3};
 
 static xdata SYS_CFG CFG_DATA = {0};
 
