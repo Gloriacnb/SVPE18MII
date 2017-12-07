@@ -127,8 +127,11 @@ bool setDefault(void) {
 	writeSE0164(0x07, 0xDD);//使能地址表老化和初始化；使能流控
 	writeSE0164(0x0d, 0xC0); //选择网管帧发送接收均为数据格式标准网管帧
 	writeSE0164(0x10, 0xFF);//时系选择
-	writeSE0164(0x1e, 0x25);//最大帧长(高位)
-	writeSE0164(0x1f, 0x81);//最大帧长(低位)
+    writeSE0164(0x40, 0xC0); //与SE0166对通，需要配置这个寄存器
+	//writeSE0164(0x1e, 0x25);//最大帧长(高位)
+	//writeSE0164(0x1f, 0x81);//最大帧长(低位)
+    writeSE0164(0x1e, 0x08);//最大帧长(高位)
+	writeSE0164(0x1f, 0x00);
 	return true;
 }
 
