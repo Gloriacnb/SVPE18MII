@@ -136,6 +136,22 @@ void processCMD(CMD_FRAME* f) {
 				nack(f, ERR_SETFAILED);
 			}
 			break;
+		case CMD_TS_SEL_GET:
+			if( getTsSel(oPara, 4) ) {
+				padTData(f, 4);
+			}
+			else {
+				nack(f, ERR_INPUT);
+			}
+			break;
+		case CMD_TS_SEL_SET:
+			if( setTsSel(iPara, 4) ) {
+				ack(f);
+			}
+			else {
+				nack(f, ERR_SETFAILED);
+			}
+			break;
 		case CMD_DEBUG:
 			if( f->rlen >= 4 ) {
 				switch(f->rdata[1]) {

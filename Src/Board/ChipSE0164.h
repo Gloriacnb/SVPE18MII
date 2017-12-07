@@ -33,7 +33,8 @@ void readRCMFOver(void);
 /*for E1时钟*/
 void setE1ClockMode(uint8 mode);
 //void setE1RecoverClockSouce(uint8 e1port);
-
+/*for ts select*/
+void writeTsSel(uint8* ts, uint8 len);
 /*for GFP ALARM*/
 bool ifGFPSyncLOSS(void);
 uint8 getVCGAlarm(void);

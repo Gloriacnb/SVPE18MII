@@ -120,7 +120,7 @@ uint16 readChipID(void) {
 bool setDefault(void) {
 	uint8 i = 0;
 	writeSE0164(SE0164_GLOBAL_CHIP_RST_EN, 0x3F);//控制方式为寄存器输入，WAN侧以太侧发送接收使能，打开WAN侧环回检测
-	writeSE0164(SE0164_GLOBAL_WAN_TS_CLK, 0x00);//WAN收发均采用E1 HDB3模式
+	writeSE0164(SE0164_GLOBAL_WAN_TS_CLK, 0x20);//WAN收发均采用E1 HDB3模式 TS选择bit模式
 	writeSE0164(SE0164_GLOBAL_CFG_4, 0x98);//禁止带宽耦合，封包模式为GFP
 	writeSE0164(SE0164_GLOBAL_CFG_5, 0x07);//PHY接口强制百兆全双工，禁止自动网管帧，禁止MAC地址过滤，SDRAM大容量，使能流控
 	writeSE0164(0x06, 0xA7);//检测到环回时，禁止MII接口；GFP收管理帧到接收RAM；
@@ -273,6 +273,15 @@ void setE1ClockMode(uint8 mode) {
 //	v |= (e1port & 0xf);
 //	writeSE0164(SE0164_E1_CFG2, v);
 //}
+
+void writeTsSel(uint8* ts, uint8 len) {
+	uint8 i = 0;
+	if( (ts != 0) || (len > 4) ) {
+		for (i = 0; i < 4; ++i) {
+			writeSE0164(0x13-i, ts[i]);
+		}
+	}
+}
 
 
 bool ifGFPSyncLOSS(void) {

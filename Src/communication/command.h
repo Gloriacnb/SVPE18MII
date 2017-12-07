@@ -43,6 +43,8 @@ enum {
 	CMD_VCG_CFG_SET		= 8,
 	CMD_SYS_CFG_GET		= 9,
 	CMD_SYS_CFG_SET		= 10,
+	CMD_TS_SEL_GET		= 11,
+	CMD_TS_SEL_SET      = 12,
 	CMD_DEBUG			= 0xdb,
 };
 

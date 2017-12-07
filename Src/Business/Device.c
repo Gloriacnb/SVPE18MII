@@ -54,10 +54,15 @@ void initSysConfig(void) {
 	readConfig(SYS_CFG_SECTOR, (uint8*)&CFG_DATA, sizeof(CFG_DATA));
 	if( CFG_DATA.crc != 0x5A ) {
 		CFG_DATA.clock = 0;
+		CFG_DATA.ts[0] = 0xfe;
+		CFG_DATA.ts[1] = 0xff;
+		CFG_DATA.ts[2] = 0xff;
+		CFG_DATA.ts[3] = 0xff;
 		CFG_DATA.crc = 0x5A;
 		saveConfig(SYS_CFG_SECTOR, (uint8*)&CFG_DATA, sizeof(CFG_DATA));
 	}
 	setE1ClockMode(CFG_DATA.clock);
+	writeTsSel(CFG_DATA.ts, 4);
 }
 
 bool setClockMode(uint8 mode) {
@@ -71,3 +76,29 @@ bool setClockMode(uint8 mode) {
 uint8 getClockMode(void) {
 	return CFG_DATA.clock;
 }
+
+bool getTsSel(uint8* ts, uint8 len) {
+	uint8 i = 0;
+	if( ts == 0 || len > 4 ) {
+		return false;
+	}
+	for (i = 0; i < len; ++i) {
+		ts[i] = CFG_DATA.ts[i];
+	}
+	return true;
+}
+
+bool setTsSel(uint8* ts, uint8 len) {
+	uint8 i = 0;
+	if( ts == 0 || len < 4 ) {
+		return false;
+	}
+	writeTsSel(ts, len);
+	for (i = 0; i < len; ++i) {
+		CFG_DATA.ts[i] = ts[i];
+	}
+	saveConfig(SYS_CFG_SECTOR, (uint8*)&CFG_DATA, sizeof(CFG_DATA));
+	return true;
+
+}
+
